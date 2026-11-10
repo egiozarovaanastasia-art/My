@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Настя | Портфолио</title>
+<title>VOX | Портфолио</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -28,6 +28,7 @@
     background-color: var(--bg);
     color: var(--text);
     line-height: 1.6;
+    overflow-x: hidden;
   }
 
   /* --- ШАПКА --- */
@@ -38,7 +39,8 @@
   }
   .logo { 
     font-family: 'Playfair Display', serif;
-    font-weight: 700; font-size: 1.6rem; color: var(--accent); letter-spacing: 1px;
+    font-weight: 900; font-size: 1.8rem; color: var(--accent); letter-spacing: 2px;
+    text-transform: uppercase;
   }
 
   /* --- БАННЕРЫ --- */
@@ -80,7 +82,11 @@
   }
   .search-bar:focus { border-color: var(--accent); }
 
-  .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+  /* Горизонтальная прокрутка для категорий */
+  .categories { 
+    display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; 
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
   .categories::-webkit-scrollbar { display: none; }
   
   .cat-btn {
@@ -92,42 +98,97 @@
     background: var(--accent); color: #fff; border-color: var(--accent); 
   }
 
-  /* Сетка карточек */
+  /* Горизонтальная прокрутка для карточек */
   .grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;
+    display: flex; gap: 25px; overflow-x: auto; padding-bottom: 20px;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .grid::-webkit-scrollbar { display: none; }
   
   .card {
     background: var(--card-bg); border-radius: 20px; overflow: hidden;
     box-shadow: var(--shadow); transition: 0.3s; display: flex; flex-direction: column;
     border: 1px solid var(--pale-slate);
+    min-width: 280px; max-width: 300px; flex-shrink: 0; scroll-snap-align: start;
+    cursor: pointer;
   }
   .card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(96, 77, 83, 0.15); }
   
   .card-img-wrapper {
     width: 100%; height: 200px; overflow: hidden; background: var(--soft-blush);
+    position: relative;
   }
   .card-img {
     width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;
   }
   .card:hover .card-img { transform: scale(1.05); }
 
-  .card-content { padding: 25px; display: flex; flex-direction: column; flex-grow: 1;}
+  .img-placeholder {
+    width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
+    color: var(--cool-steel); font-weight: 700; font-size: 0.9rem; text-align: center; padding: 20px;
+  }
+
+  .card-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1;}
   .card-cat { 
     font-size: 0.75rem; color: var(--cool-steel); font-weight: 800; 
-    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;
   }
   .card-title { 
     font-family: 'Playfair Display', serif;
-    font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: var(--taupe-grey);
+    font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; color: var(--taupe-grey);
   }
-  .card-desc { font-size: 0.9rem; color: #888; margin-bottom: 20px; flex-grow: 1; }
   .card-price { 
-    font-size: 1.4rem; font-weight: 800; color: var(--accent); 
-    border-top: 1px solid var(--pale-slate); padding-top: 15px;
+    font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-top: auto;
   }
 
   #loader { text-align: center; padding: 50px; font-size: 1.2rem; color: var(--accent); font-weight: bold; }
+
+  /* --- МОДАЛЬНОЕ ОКНО (ПОДРОБНАЯ ИНФО) --- */
+  #modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(96, 77, 83, 0.8); backdrop-filter: blur(5px);
+    z-index: 1000; display: none; justify-content: center; align-items: center;
+    opacity: 0; transition: opacity 0.3s;
+    padding: 20px;
+  }
+  #modal.active { display: flex; opacity: 1; }
+  
+  .modal-content {
+    background: #fff; border-radius: 30px; overflow: hidden;
+    max-width: 800px; width: 100%; max-height: 90vh; display: flex; flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    transform: translateY(20px); transition: transform 0.3s;
+    position: relative;
+  }
+  #modal.active .modal-content { transform: translateY(0); }
+  
+  .modal-close {
+    position: absolute; top: 15px; right: 20px; font-size: 2rem;
+    color: #fff; cursor: pointer; z-index: 10; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.3); width: 40px; height: 40px; border-radius: 50%;
+    display: flex; justify-content: center; align-items: center; line-height: 1;
+  }
+
+  .modal-img-wrap {
+    width: 100%; height: 350px; background: var(--soft-blush);
+  }
+  .modal-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+  .modal-info {
+    padding: 30px; overflow-y: auto;
+  }
+  .modal-cat { font-size: 0.8rem; color: var(--cool-steel); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;}
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; margin: 10px 0; }
+  .modal-desc { font-size: 1rem; color: #666; margin-bottom: 25px; white-space: pre-wrap; line-height: 1.8;}
+  .modal-price { font-size: 1.8rem; font-weight: 900; color: var(--accent); margin-bottom: 25px; }
+  
+  .modal-btn {
+    display: block; width: 100%; padding: 15px; text-align: center;
+    background: var(--accent); color: #fff; text-decoration: none;
+    border-radius: 15px; font-weight: 800; font-size: 1.1rem; transition: 0.2s;
+  }
+  .modal-btn:hover { background: #c96a7a; }
 
   /* --- ПОДВАЛ --- */
   footer {
@@ -145,44 +206,57 @@
   @media (max-width: 800px) {
     .banner-overlay { padding: 25px; }
     .banner-overlay h2 { font-size: 2rem; }
-    .grid { grid-template-columns: 1fr; }
+    .modal-img-wrap { height: 250px; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">Настя</div>
+  <div class="logo">VOX</div>
 </header>
 
-<!-- Контейнер для баннеров -->
 <div class="banner-container" id="banner-container"></div>
 
-<!-- Каталог работ -->
 <section class="portfolio-section">
   <div class="controls">
     <input type="text" id="search" class="search-bar" placeholder="Поиск по названию..." oninput="renderCards()">
+    <!-- Категории теперь свайпаются вбок -->
     <div class="categories" id="categories-container"></div>
   </div>
 
   <div id="loader">Загрузка работ...</div>
+  <!-- Карточки теперь свайпаются вбок -->
   <div class="grid" id="grid-container"></div>
 </section>
 
 <footer>
   <div class="social-links">
-    <!-- ТВОЯ ССЫЛКА НА ВК -->
     <a href="https://vk.ru/club243147040" target="_blank" class="social-btn">Мой ВКонтакте</a>
   </div>
-  
-  <!-- 2026 ГОД -->
   <p style="color: var(--cool-steel); font-size: 0.9rem;">
-    © 2026 Настя. Веб-разработка и дизайн.
+    © 2026 VOX. Веб-разработка и дизайн.
   </p>
 </footer>
 
+<!-- МОДАЛЬНОЕ ОКНО -->
+<div id="modal" onclick="closeModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-close" onclick="closeModal(event)">×</div>
+    <div class="modal-img-wrap" id="modal-img-wrap">
+      <!-- Картинка -->
+    </div>
+    <div class="modal-info">
+      <div class="modal-cat" id="modal-cat">Категория</div>
+      <div class="modal-title" id="modal-title">Название</div>
+      <div class="modal-price" id="modal-price">Цена</div>
+      <div class="modal-desc" id="modal-desc">Описание...</div>
+      <a href="https://vk.ru/club243147040" target="_blank" class="modal-btn">Связаться со мной</a>
+    </div>
+  </div>
+</div>
+
 <script>
-// ТВОЯ ССЫЛКА НА ТАБЛИЦУ
 const CSV_URL = "https://docs.google.com/spreadsheets/d/1CU6Pq6pJ8xI7yIIRMb83ORlIXBrVxdpK5vRgPumNOm8/export?format=csv";
 
 let allWorks = [];
@@ -209,7 +283,7 @@ async function loadData() {
         category: row[idxCat] ? row[idxCat].trim() : "Разное",
         title: row[idxTitle].trim(),
         price: row[idxPrice] ? row[idxPrice].trim() : "",
-        desc: row[idxDesc] ? row[idxDesc].trim() : "",
+        desc: row[idxDesc] ? row[idxDesc].trim() : "Описание пока не добавлено.",
         photo: row[idxPhoto] ? row[idxPhoto].trim() : ""
       }));
 
@@ -248,7 +322,7 @@ function renderBanners(banners) {
   const container = document.getElementById('banner-container');
   container.innerHTML = banners.map(b => `
     <div class="banner-card">
-      ${b.photo ? `<img src="${b.photo}" alt="${b.title}">` : ''}
+      ${b.photo ? `<img src="${b.photo}" alt="${b.title}" onerror="this.style.display='none'">` : ''}
       <div class="banner-overlay">
         <h2>${b.title}</h2>
         <p>${b.desc}</p>
@@ -283,23 +357,57 @@ function renderCards() {
 
   const grid = document.getElementById('grid-container');
   if (filtered.length === 0) {
-    grid.innerHTML = "<p style='color:var(--cool-steel); grid-column: 1/-1; text-align:center;'>Ничего не найдено.</p>";
+    grid.innerHTML = "<p style='color:var(--cool-steel); width:100%; text-align:center;'>Ничего не найдено.</p>";
     return;
   }
 
-  grid.innerHTML = filtered.map(w => `
-    <div class="card">
+  grid.innerHTML = filtered.map((w, index) => `
+    <div class="card" onclick="openModal(${index})">
       <div class="card-img-wrapper">
-        ${w.photo ? `<img src="${w.photo}" class="card-img" alt="${w.title}" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">` : ''}
+        ${w.photo 
+          ? `<img src="${w.photo}" class="card-img" alt="${w.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+             <div class="img-placeholder" style="display:none;">Нет фото</div>` 
+          : `<div class="img-placeholder">Нет фото</div>`
+        }
       </div>
       <div class="card-content">
         <div class="card-cat">${w.category}</div>
         <div class="card-title">${w.title}</div>
-        <div class="card-desc">${w.desc}</div>
-        ${w.price ? `<div class="card-price">${w.price} ₽</div>` : ''}
+        <div class="card-price">${w.price ? w.price + ' ₽' : 'Цена по запросу'}</div>
       </div>
     </div>
   `).join('');
+  
+  // Сохраняем отфильтрованный массив для модального окна
+  window.currentFilteredWorks = filtered;
+}
+
+// --- МОДАЛЬНОЕ ОКНО ---
+function openModal(index) {
+  const work = window.currentFilteredWorks[index];
+  if (!work) return;
+
+  document.getElementById('modal-cat').innerText = work.category;
+  document.getElementById('modal-title').innerText = work.title;
+  document.getElementById('modal-price').innerText = work.price ? work.price + ' ₽' : 'Цена по запросу';
+  document.getElementById('modal-desc').innerText = work.desc;
+
+  const imgWrap = document.getElementById('modal-img-wrap');
+  if (work.photo) {
+    imgWrap.innerHTML = `<img src="${work.photo}" alt="${work.title}">`;
+  } else {
+    imgWrap.innerHTML = `<div class="img-placeholder">Нет фото</div>`;
+  }
+
+  document.getElementById('modal').classList.add('active');
+  document.body.style.overflow = 'hidden'; // Блокируем прокрутку фона
+}
+
+function closeModal(event) {
+  if (event.target.id === 'modal' || event.target.className === 'modal-close') {
+    document.getElementById('modal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
 }
 
 loadData();
