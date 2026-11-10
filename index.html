@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Настя | Портфолио</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Цвета из твоей палитры */
+    --soft-blush: #fddbda;
+    --old-rose: #db7f8e;
+    --pale-slate: #d5c5c8;
+    --cool-steel: #9da3a4;
+    --taupe-grey: #604d53;
+    
+    /* Распределение ролей */
+    --bg: #faf7f7; /* Очень светлый фон на основе blush */
+    --text: var(--taupe-grey);
+    --accent: var(--old-rose);
+    --accent-hover: #c96a7a;
+    --card-bg: #ffffff;
+    --border: var(--pale-slate);
+    --shadow: 0 10px 30px rgba(96, 77, 83, 0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* --- ШАПКА --- */
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 40px; background: #fff; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 10px rgba(96, 77, 83, 0.05);
+  }
+  .logo { 
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: 1.6rem; color: var(--accent); letter-spacing: 1px;
+  }
+
+  /* --- БАННЕРЫ --- */
+  .banner-container {
+    max-width: 1100px; margin: 30px auto; padding: 0 20px;
+  }
+  .banner-card {
+    position: relative; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 15px 40px rgba(96, 77, 83, 0.15); margin-bottom: 30px;
+    min-height: 350px; display: flex; align-items: flex-end;
+  }
+  .banner-card img {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;
+  }
+  .banner-overlay {
+    position: relative; z-index: 2; padding: 40px;
+    /* Градиент из темного Taupe Grey */
+    background: linear-gradient(transparent, rgba(96, 77, 83, 0.9)); width: 100%; color: #fff;
+  }
+  .banner-overlay h2 { 
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem; font-weight: 700; margin-bottom: 10px; 
+  }
+  .banner-overlay p { font-size: 1.1rem; opacity: 0.9; }
+
+  /* --- КАТАЛОГ РАБОТ --- */
+  .portfolio-section {
+    max-width: 1100px; margin: 40px auto; padding: 0 20px;
+  }
+  
+  .controls {
+    display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px;
+  }
+  
+  .search-bar {
+    width: 100%; padding: 16px 25px; border-radius: 30px; 
+    border: 2px solid var(--pale-slate);
+    font-family: 'Montserrat', sans-serif; font-size: 1rem; outline: none; transition: 0.3s;
+    box-shadow: var(--shadow); background: #fff; color: var(--text);
+  }
+  .search-bar:focus { border-color: var(--accent); }
+
+  .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+  .categories::-webkit-scrollbar { display: none; }
+  
+  .cat-btn {
+    background: #fff; border: 2px solid var(--pale-slate); color: var(--cool-steel);
+    padding: 10px 22px; border-radius: 30px; font-weight: 700; cursor: pointer;
+    white-space: nowrap; transition: 0.3s; font-family: 'Montserrat', sans-serif;
+  }
+  .cat-btn:hover, .cat-btn.active { 
+    background: var(--accent); color: #fff; border-color: var(--accent); 
+  }
+
+  /* Сетка карточек */
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;
+  }
+  
+  .card {
+    background: var(--card-bg); border-radius: 20px; overflow: hidden;
+    box-shadow: var(--shadow); transition: 0.3s; display: flex; flex-direction: column;
+    border: 1px solid var(--pale-slate);
+  }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(96, 77, 83, 0.15); }
+  
+  .card-img-wrapper {
+    width: 100%; height: 200px; overflow: hidden; background: var(--soft-blush);
+  }
+  .card-img {
+    width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;
+  }
+  .card:hover .card-img { transform: scale(1.05); }
+
+  .card-content { padding: 25px; display: flex; flex-direction: column; flex-grow: 1;}
+  .card-cat { 
+    font-size: 0.75rem; color: var(--cool-steel); font-weight: 800; 
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .card-title { 
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: var(--taupe-grey);
+  }
+  .card-desc { font-size: 0.9rem; color: #888; margin-bottom: 20px; flex-grow: 1; }
+  .card-price { 
+    font-size: 1.4rem; font-weight: 800; color: var(--accent); 
+    border-top: 1px solid var(--pale-slate); padding-top: 15px;
+  }
+
+  #loader { text-align: center; padding: 50px; font-size: 1.2rem; color: var(--accent); font-weight: bold; }
+
+  /* --- ПОДВАЛ --- */
+  footer {
+    background: #fff; padding: 40px 20px; text-align: center; margin-top: 80px;
+    border-top: 1px solid var(--border);
+  }
+  .social-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;}
+  .social-btn {
+    text-decoration: none; color: var(--taupe-grey); font-weight: 700;
+    padding: 12px 25px; border-radius: 30px; 
+    background: var(--soft-blush); transition: 0.2s;
+  }
+  .social-btn:hover { background: var(--old-rose); color: #fff; transform: translateY(-3px); }
+
+  @media (max-width: 800px) {
+    .banner-overlay { padding: 25px; }
+    .banner-overlay h2 { font-size: 2rem; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Настя</div>
+</header>
+
+<!-- Контейнер для баннеров -->
+<div class="banner-container" id="banner-container"></div>
+
+<!-- Каталог работ -->
+<section class="portfolio-section">
+  <div class="controls">
+    <input type="text" id="search" class="search-bar" placeholder="Поиск по названию..." oninput="renderCards()">
+    <div class="categories" id="categories-container"></div>
+  </div>
+
+  <div id="loader">Загрузка работ...</div>
+  <div class="grid" id="grid-container"></div>
+</section>
+
+<footer>
+  <div class="social-links">
+    <!-- ЗАМЕНИ ССЫЛКИ НА СВОИ -->
+    <a href="https://t.me/твой_ник" target="_blank" class="social-btn">Telegram</a>
+    <a href="https://vk.com/твой_ник" target="_blank" class="social-btn">ВКонтакте</a>
+  </div>
+  <p style="color: var(--cool-steel); font-size: 0.9rem;">© 2024 Настя. Все права защищены.</p>
+</footer>
+
+<script>
+// ТВОЯ ССЫЛКА НА ТАБЛИЦУ
+const CSV_URL = "https://docs.google.com/spreadsheets/d/1CU6Pq6pJ8xI7yIIRMb83ORlIXBrVxdpK5vRgPumNOm8/export?format=csv";
+
+let allWorks = [];
+let currentCategory = "Все";
+
+async function loadData() {
+  try {
+    const response = await fetch(CSV_URL);
+    const csvText = await response.text();
+    const rows = parseCSV(csvText);
+
+    const headers = rows[0].map(h => h.trim().toLowerCase());
+    const idxType = headers.indexOf('тип');
+    const idxCat = headers.indexOf('категория');
+    const idxTitle = headers.indexOf('название');
+    const idxPrice = headers.indexOf('цена');
+    const idxDesc = headers.indexOf('описание');
+    const idxPhoto = headers.indexOf('фото');
+
+    const allData = rows.slice(1)
+      .filter(row => row[idxTitle])
+      .map(row => ({
+        type: row[idxType] ? row[idxType].trim().toLowerCase() : "работа",
+        category: row[idxCat] ? row[idxCat].trim() : "Разное",
+        title: row[idxTitle].trim(),
+        price: row[idxPrice] ? row[idxPrice].trim() : "",
+        desc: row[idxDesc] ? row[idxDesc].trim() : "",
+        photo: row[idxPhoto] ? row[idxPhoto].trim() : ""
+      }));
+
+    const banners = allData.filter(item => item.type === 'баннер');
+    allWorks = allData.filter(item => item.type !== 'баннер');
+
+    renderBanners(banners);
+    document.getElementById('loader').style.display = 'none';
+    initCategories();
+    renderCards();
+  } catch (error) {
+    document.getElementById('loader').innerText = "Ошибка загрузки. Проверьте доступ к таблице.";
+  }
+}
+
+function parseCSV(text) {
+  const rows = []; let row = []; let field = ''; let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"' && text[i+1] === '"') { field += '"'; i++; }
+      else if (c === '"') inQuotes = false;
+      else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else if (c !== '\r') field += c;
+    }
+  }
+  if (field || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+function renderBanners(banners) {
+  const container = document.getElementById('banner-container');
+  container.innerHTML = banners.map(b => `
+    <div class="banner-card">
+      ${b.photo ? `<img src="${b.photo}" alt="${b.title}">` : ''}
+      <div class="banner-overlay">
+        <h2>${b.title}</h2>
+        <p>${b.desc}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+function initCategories() {
+  const cats = ["Все", ...new Set(allWorks.map(w => w.category))];
+  document.getElementById('categories-container').innerHTML = cats.map(c => `
+    <button class="cat-btn ${c === currentCategory ? 'active' : ''}" onclick="setCategory('${c.replace(/'/g, "\\'")}')">${c}</button>
+  `).join('');
+}
+
+function setCategory(cat) {
+  currentCategory = cat;
+  initCategories();
+  renderCards();
+}
+
+function renderCards() {
+  const query = document.getElementById('search').value.toLowerCase();
+  let filtered = allWorks;
+
+  if (currentCategory !== "Все") {
+    filtered = filtered.filter(w => w.category === currentCategory);
+  }
+  if (query) {
+    filtered = filtered.filter(w => w.title.toLowerCase().includes(query));
+  }
+
+  const grid = document.getElementById('grid-container');
+  if (filtered.length === 0) {
+    grid.innerHTML = "<p style='color:var(--cool-steel); grid-column: 1/-1; text-align:center;'>Ничего не найдено.</p>";
+    return;
+  }
+
+  grid.innerHTML = filtered.map(w => `
+    <div class="card">
+      <div class="card-img-wrapper">
+        ${w.photo ? `<img src="${w.photo}" class="card-img" alt="${w.title}" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">` : ''}
+      </div>
+      <div class="card-content">
+        <div class="card-cat">${w.category}</div>
+        <div class="card-title">${w.title}</div>
+        <div class="card-desc">${w.desc}</div>
+        ${w.price ? `<div class="card-price">${w.price} ₽</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+loadData();
+</script>
+</body>
+</html>
